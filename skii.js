@@ -1,16 +1,21 @@
 var fs = require('fs');
 
+var grid = [];
+var NORTH = 0;
+var EAST  = 1;
+var SOUTH = 2;
+var WEST  = 3;
+var row,height;
 
-
-/////////////////////////////////////////////////////////////// oop branch
+//////////////////////////////////////////////////////////// this is master branch
 var grid_init = function() {
 	// Read file
 	var b = fs.readFileSync('testdata.txt').toString();
 
-	b.split(/\r?\n/).forEach(function(line){
+	b.split(/\r?\n/).forEach(function(line,index){
   		var lineArray = line.split(/\s/);
   		// Based on the protocol it should be the first line
-  		if(lineArray.length === 2) {
+  		if(index === 0) {
   			row = parseInt(lineArray[0]);
   			height = parseInt(lineArray[1]);
   		} 
@@ -59,13 +64,7 @@ var skii = function(x , y) {
 	currentPath = 1,
 	startDrop,
 	endDrop,
-	pathList = [],
-	grid = [],
-	NORTH = 0,
-	EAST  = 1,
-	SOUTH = 2,
-	WEST  = 3,
-	row,height;
+	pathList = [];
 
 	startDrop = getValue(x, y);
 
@@ -116,4 +115,4 @@ for (var i=0; i<row; i++)
 
 
 // View grid
-console.log(grid);
+//console.log(grid);

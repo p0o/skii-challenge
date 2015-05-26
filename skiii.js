@@ -11,10 +11,10 @@ var fs = require('fs'),
 * use this function to avoid changing grid manually
 */
 var getValue = function(x, y){
-	if (typeof(grid[x]) === 'undefined' || typeof(grid[y]) === 'undefined')
+	if (typeof grid[y] === 'undefined')
 		return -1;
-	else
-		return grid[x][y];
+	else if (typeof grid[y][x] !== 'undefined')
+			return grid[y][x];
 }
 /**
 * setter function for grid
@@ -73,8 +73,8 @@ var loadFile = function(addr) {
 }
 
 var skiiFromPoint = function continueSkiing(xPoint, yPoint) {
-	var isDeadend = true,
-		currentPoint,
+	this.isDeadend = true;
+	var	currentPoint,
 		direction,
 		nextPoint;
 
@@ -88,17 +88,18 @@ var skiiFromPoint = function continueSkiing(xPoint, yPoint) {
 		if(nextPoint < currentPoint && nextPoint !== -1) {
 			// Increment path
 			currentPath+=1;
-			isDeadend = false;
+			this.isDeadend = false;
 			continueSkiing(direction[0], direction[1]);
 		}
 	}
 	// if it was a deadend then record path and drop
 	// then get back to surf other pathes in the tree
-	if (isDeadend) {
+	if (this.isDeadend) {
 		var currentDrop = startPoint - currentPoint;
 
 		statsCheck(currentPath,currentDrop);
-		console.log('bestPath:%s bestDrop:%s',currentPath,currentDrop);
+		//console.log('startPoint:%s currentPoint:%s',startPoint,currentPoint);
+		//console.log('bestPath:%s bestDrop:%s',currentPath,currentDrop);
 		// stepping back for one path
 		if(currentPath > 1)
 			currentPath-=1;
@@ -107,11 +108,12 @@ var skiiFromPoint = function continueSkiing(xPoint, yPoint) {
 }
 
 var checkoutPoints = function() {
+	var that={};
 
 	for (var i=0; i < row; i++)
 		for (var j=0; j < height; j++) {
 			startPoint = getValue(i, j);
-			skiiFromPoint(i, j);
+			skiiFromPoint.call(that,i, j);
 			currentPath=1;
 		}
 }
