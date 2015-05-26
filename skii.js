@@ -10,7 +10,7 @@ var row,height;
 //////////////////////////////////////////////////////////// this is master branch
 var grid_init = function() {
 	// Read file
-	var b = fs.readFileSync('map.txt').toString();
+	var b = fs.readFileSync('testdata.txt').toString();
 
 	b.split(/\r?\n/).forEach(function(line){
   		var lineArray = line.split(/\s/);
