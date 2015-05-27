@@ -5,6 +5,7 @@ A cool programming challenge in Node JS. This code will find the longest and ste
 The whole program is packaged in a module called skii.js. You can simply load it with any similar data this way:
 
 ```bash
+var Skii = require('./skii.js');
 var skii = Skii();
 
 skii.load('map.txt');
