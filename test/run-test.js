@@ -96,7 +96,7 @@ describe('Skii in Singapore - Test Suit', function(){
 
 	afterEach(function() {
 		// Deleting module cache to try a new file
-		delete require.cache[require.resolve('../skiii.js')];
-		Skii = require('../skiii.js');
+		delete require.cache[require.resolve('../skii.js')];
+		Skii = require('../skii.js');
 	});
 });
