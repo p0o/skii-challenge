@@ -1,11 +1,11 @@
 var fs = require('fs'),
-	currentPath = 1,
+	currentLength = 1,
 	grid = [],
 	NORTH = 0,
 	EAST  = 1,
 	SOUTH = 2,
 	WEST  = 3,
-	row,height,startPoint,finalPath=0,finalDrop=0;
+	isDeadend,row,height,startPoint,finalLength=0,finalDrop=0,benchmark=0;
 /**
 * getter function for grid
 * use this function to avoid changing grid manually
@@ -46,7 +46,7 @@ var getDirection = function(x, y, destination){
 	}	
 }
 /**
-* loading file from memory
+* loadFile(addr) - loading file from memory
 *
 * @param: {string} address of the file containing crazy numbers from local
 * @return: {array} the grid array extracted from the given path
@@ -73,7 +73,7 @@ var loadFile = function(addr) {
 }
 
 var skiiFromPoint = function continueSkiing(xPoint, yPoint) {
-	this.isDeadend = true;
+	isDeadend = true;
 	var	currentPoint,
 		direction,
 		nextPoint;
@@ -86,44 +86,53 @@ var skiiFromPoint = function continueSkiing(xPoint, yPoint) {
 		//console.log('nextPoint: %s', nextPoint);
 		//console.log('nextPoint: %d', nextPoint);
 		if(nextPoint < currentPoint && nextPoint !== -1) {
-			// Increment path
-			currentPath+=1;
-			this.isDeadend = false;
+			// Increment length
+			currentLength+=1;
+			isDeadend = false;
 			continueSkiing(direction[0], direction[1]);
 		}
 	}
-	// if it was a deadend then record path and drop
+	// if it was a deadend then record length and drop
 	// then get back to surf other pathes in the tree
-	if (this.isDeadend) {
+	if (isDeadend) {
 		var currentDrop = startPoint - currentPoint;
+		statsCheck(currentLength,currentDrop);
 
-		statsCheck(currentPath,currentDrop);
-		//console.log('startPoint:%s currentPoint:%s',startPoint,currentPoint);
-		//console.log('bestPath:%s bestDrop:%s',currentPath,currentDrop);
-		// stepping back for one path
-		if(currentPath > 1)
-			currentPath-=1;
+		// stepping back for one length
+		if(currentLength > 1)
+			currentLength-=1;
 	}
 
+}
+
+var skii = function(x, y) {
+	// storing start point to calculate drop
+	startPoint = getValue(x, y);
+	// running recursive function to skii the point as deep as possible
+	skiiFromPoint(x, y);
+	// reset length 
+	currentLength=1;
 }
 
 var checkoutPoints = function() {
-	var that={};
+	// start benchmarking
+	var start = new Date().getTime();
+	// surfing all the start points
+	for (var x=0; x < row; x++)
+		for (var y=0; y < height; y++)
+			skii(x, y);
 
-	for (var i=0; i < row; i++)
-		for (var j=0; j < height; j++) {
-			startPoint = getValue(i, j);
-			skiiFromPoint.call(that,i, j);
-			currentPath=1;
-		}
+	// record benchmark
+	var finish = new Date().getTime();
+	benchmark = finish-start;
 }
 
-var statsCheck = function(bestPath,bestDrop) {
-	if(bestPath > finalPath || bestPath === finalPath && bestDrop > finalDrop) {
-		finalPath = bestPath;
+var statsCheck = function(bestLength,bestDrop) {
+	if(bestLength > finalLength || bestLength === finalLength && bestDrop > finalDrop) {
+		finalLength = bestLength;
 		finalDrop = bestDrop;
 	}
-	bestPath = 0;
+	bestLength = 0;
 	bestDrop = 0;
 }
 
@@ -131,13 +140,15 @@ var statsCheck = function(bestPath,bestDrop) {
 module.exports = function() {
 	return {
 		load: function(addr) {
-			return loadFile(addr);
+			loadFile(addr);
+			return this;
 		},
 		run: function() {
 			checkoutPoints();
 			return {
-				bestLength: finalPath,
-				bestDrop: finalDrop
+				bestLength: finalLength,
+				bestDrop: finalDrop,
+				benchmark: benchmark
 			}
 		}
 	}
