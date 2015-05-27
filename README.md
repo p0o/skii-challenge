@@ -1,10 +1,8 @@
 # Skii Challenge
 
-A cool programming challenge in Node JS. This code will find the longest and steepest path in a 1000x1000 map with a set of rules specified here by RedMart team:
+A cool programming challenge in Node JS. This code will find the longest and steepest path in a 1000x1000 map.
 
-http://geeks.redmart.com/2015/01/07/skiing-in-singapore-a-coding-diversion/
-
-The whole code is packaged in a module called skii.js. You can simply load it with any similar data this way:
+The whole program is packaged in a module called skii.js. You can simply load it with any similar data this way:
 
 ```bash
 var skii = Skii();
@@ -27,14 +25,14 @@ node app.js
 In order to run fancy tests you will need mocha framework. Install it globally with npm:
 
 ```bash
-npm install -g mocha
+sudo npm install -g mocha
 ```
 
-to run test type in terminal:
+To run the test suit, type in terminal:
 
 ```bash
 cd test
 mocha run-test
 ```
 
-Great! feel free to ask me anything if you liked it.
+Great! feel free to ask me anything by sending an email to hello [at] pooria.co.
